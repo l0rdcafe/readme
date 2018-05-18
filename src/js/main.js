@@ -17,6 +17,7 @@ const signIn = function() {
       .then(res => {
         model.setUserInfo(res);
         console.log(res);
+        view.drawInfo(model.state);
       })
       .catch(err => console.error(err));
   } else {

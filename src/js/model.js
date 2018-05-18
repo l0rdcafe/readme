@@ -19,6 +19,8 @@ const setUserInfo = function(res) {
   const artist = res[1].item.artists[0].name;
   const tracks = res[2].items;
 
+  resetState();
+
   state.user = name;
   state.userID = id;
   state.playing = {
@@ -30,4 +32,4 @@ const setUserInfo = function(res) {
   console.log(state);
 };
 
-export default { state, resetState, setUserInfo };
+export default { state, setUserInfo };

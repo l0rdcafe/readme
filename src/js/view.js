@@ -17,9 +17,32 @@ const drawInfoDiv = function() {
   return section;
 };
 
+const drawRecentPlays = function(recents) {
+  const recentList = helpers.newEl("ol");
+  recentList.className = "list";
+  recents.forEach(recent => {
+    const item = helpers.newEl("li");
+    const albumTitle = helpers.newEl("small");
+    albumTitle.innerHTML = `${recent.track.album.name}`;
+    item.className = "list__item";
+    item.innerHTML = `${recent.track.artists[0].name} - ${recent.track.name}`;
+    item.appendChild(albumTitle);
+    recentList.appendChild(item);
+  });
+  return recentList;
+};
+
 const drawInfo = function(state) {
+  const { user } = state;
+  const { song } = state.playing;
+  const { artist } = state.playing;
   const section = drawInfoDiv();
-  section.innerHTML = state.user;
+  const userTitle = helpers.newEl("h4");
+  const recentList = drawRecentPlays(state.recentlyPlayed);
+  userTitle.className = "title";
+  userTitle.innerHTML = `Welcome, ${user}. You are currently listening to ${song} by ${artist}`;
+  section.appendChild(userTitle);
+  section.appendChild(recentList);
 };
 
 export default { drawSignInBtn, drawInfo };
