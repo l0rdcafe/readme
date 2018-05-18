@@ -16,10 +16,7 @@ const signIn = function() {
     SpotifyAPI.getInfo(options)
       .then(res => {
         model.setUserInfo(res);
-
-        SpotifyAPI.getCurrentlyPlaying(options)
-          .then(resp => console.log(resp))
-          .catch(err => console.error(err));
+        console.log(res);
       })
       .catch(err => console.error(err));
   } else {
