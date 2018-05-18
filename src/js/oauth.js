@@ -6,4 +6,11 @@ const authSignIn = function() {
   window.location = url;
 };
 
-export default { authSignIn };
+const getAccessToken = function() {
+  const match = /[#&]access_token=([^&]*)/.exec(window.location.hash);
+  const accessToken = decodeURIComponent(match[1].replace(/\+g/, " "));
+  window.location.hash = "";
+  return accessToken;
+};
+
+export default { authSignIn, getAccessToken };

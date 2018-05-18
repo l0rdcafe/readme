@@ -9,4 +9,17 @@ const drawSignInBtn = function() {
   return signBtn;
 };
 
-export default { drawSignInBtn };
+const drawInfoDiv = function() {
+  const section = helpers.newEl("div");
+  const footer = helpers.qs(".footer");
+  section.className = "section";
+  footer.parentNode.insertBefore(section, footer);
+  return section;
+};
+
+const drawInfo = function(state) {
+  const section = drawInfoDiv();
+  section.innerHTML = state.user;
+};
+
+export default { drawSignInBtn, drawInfo };

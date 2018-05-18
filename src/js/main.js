@@ -2,21 +2,25 @@ import helpers from "./helpers";
 import view from "./view";
 import SpotifyAPI from "./spotify-api";
 import OAuth from "./oauth";
+import model from "./model";
 
 const signIn = function() {
-  const tokenRegex = /[#&]access_token=([^&]*)/;
-  const getAccessToken = function() {
-    const match = tokenRegex.exec(window.location.hash);
-    const accessToken = decodeURIComponent(match[1].replace(/\+g/, " "));
-    window.location.hash = "";
-    return accessToken;
-  };
-  const hasToken = tokenRegex.test(window.location.hash);
+  const hasToken = /[#&]access_token=([^&]*)/.test(window.location.hash);
   if (hasToken) {
-    const accessToken = getAccessToken();
-    console.log(accessToken);
-    SpotifyAPI.getInfo(accessToken)
-      .then(res => console.log(res))
+    const accessToken = OAuth.getAccessToken();
+    const options = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+    SpotifyAPI.getInfo(options)
+      .then(res => {
+        model.setUserInfo(res);
+
+        SpotifyAPI.getCurrentlyPlaying(options)
+          .then(resp => console.log(resp))
+          .catch(err => console.error(err));
+      })
       .catch(err => console.error(err));
   } else {
     const signBtn = view.drawSignInBtn();
