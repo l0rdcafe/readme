@@ -3,14 +3,15 @@ import view from "./view";
 import SpotifyAPI from "./spotify-api";
 import OAuth from "./oauth";
 import model from "./model";
+import GeniusAPI from "./genius-api";
 
 const signIn = function() {
   const hasToken = /[#&]access_token=([^&]*)/.test(window.location.hash);
   if (hasToken) {
-    const accessToken = OAuth.getAccessToken();
+    const ACCESS_TOKEN = OAuth.getAccessToken();
     const options = {
       headers: {
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       }
     };
     SpotifyAPI.getInfo(options)
@@ -18,6 +19,18 @@ const signIn = function() {
         model.setUserInfo(res);
         console.log(res);
         view.drawInfo(model.state);
+
+        GeniusAPI.getLyrics(model.state)
+          .then(resp => {
+            const { response } = resp;
+            console.log(response);
+            const { id } = response.hits[0].result;
+
+            GeniusAPI.getAnnotations(id)
+              .then(result => console.log(result))
+              .catch(err => console.error(err));
+          })
+          .catch(err => console.error(err));
       })
       .catch(err => console.error(err));
   } else {

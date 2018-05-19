@@ -20,6 +20,7 @@ const drawInfoDiv = function() {
 const drawRecentPlays = function(recents) {
   const recentList = helpers.newEl("ol");
   recentList.className = "list";
+
   recents.forEach(recent => {
     const item = helpers.newEl("li");
     const albumTitle = helpers.newEl("small");
@@ -32,15 +33,21 @@ const drawRecentPlays = function(recents) {
   return recentList;
 };
 
-const drawInfo = function(state) {
+const drawUserTitle = function(state) {
   const { user } = state;
   const { song } = state.playing;
   const { artist } = state.playing;
-  const section = drawInfoDiv();
   const userTitle = helpers.newEl("h4");
-  const recentList = drawRecentPlays(state.recentlyPlayed);
   userTitle.className = "title";
   userTitle.innerHTML = `Welcome, ${user}. You are currently listening to ${song} by ${artist}`;
+  return userTitle;
+};
+
+const drawInfo = function(state) {
+  const section = drawInfoDiv();
+  const userTitle = drawUserTitle(state);
+  const recentList = drawRecentPlays(state.recentlyPlayed);
+
   section.appendChild(userTitle);
   section.appendChild(recentList);
 };
