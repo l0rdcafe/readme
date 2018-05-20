@@ -62,15 +62,9 @@ const drawInfo = function(state) {
   footer.style.position = "static";
 };
 
-const drawAnnotation = function(state) {
+const drawAnnotation = function(message) {
   const section = helpers.qs(".section");
-  const { isPlaying } = state.playing;
-  const { message } = state.playing;
-  if (isPlaying && !message) {
-    section.insertAdjacentHTML("beforeend", `${state.playing.annotationHTML}`);
-  } else {
-    section.insertAdjacentHTML("beforeend", `${state.playing.message}`);
-  }
+  section.insertAdjacentHTML("beforeend", `${message}`);
 };
 
 export default { drawSignInBtn, drawInfo, drawAnnotation };
