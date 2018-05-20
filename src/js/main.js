@@ -16,19 +16,32 @@ const signIn = function() {
     };
     SpotifyAPI.getInfo(options)
       .then(res => {
+        console.log(res);
         model.setUserInfo(res);
         console.log(res);
         view.drawInfo(model.state);
 
-        GeniusAPI.getLyrics(model.state)
+        GeniusAPI.getSong(model.state)
           .then(resp => {
             const { response } = resp;
             console.log(response);
-            const { id } = response.hits[0].result;
+            const { isPlaying } = model.state.playing;
+            const isSameArtist =
+              model.state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
+            const isSameSong = model.state.playing.song.toLowerCase() === response.hits[0].result.title.toLowerCase();
+            if (isSameArtist && isSameSong && isPlaying) {
+              const { id } = response.hits[0].result;
 
-            GeniusAPI.getAnnotations(id)
-              .then(result => console.log(result))
-              .catch(err => console.error(err));
+              GeniusAPI.getSongInfo(id)
+                .then(result => {
+                  console.log(result);
+                  model.setSongInfo(result.response);
+                  view.drawAnnotation(model.state);
+                })
+                .catch(err => console.error(err));
+            } else {
+              console.log("No results found.");
+            }
           })
           .catch(err => console.error(err));
       })

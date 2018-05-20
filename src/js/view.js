@@ -35,11 +35,18 @@ const drawRecentPlays = function(recents) {
 
 const drawUserTitle = function(state) {
   const { user } = state;
-  const { song } = state.playing;
-  const { artist } = state.playing;
+  const { isPlaying } = state.playing;
   const userTitle = helpers.newEl("h4");
   userTitle.className = "title";
-  userTitle.innerHTML = `Welcome, ${user}. You are currently listening to ${song} by ${artist}`;
+
+  if (!isPlaying) {
+    userTitle.innerHTML = "You are currently not playing anything. Please play a song on your Spotify.";
+  } else {
+    const { song } = state.playing;
+    const { artist } = state.playing;
+    userTitle.innerHTML = `Welcome, ${user}. You are currently listening to ${song} by ${artist}`;
+  }
+
   return userTitle;
 };
 
@@ -52,4 +59,15 @@ const drawInfo = function(state) {
   section.appendChild(recentList);
 };
 
-export default { drawSignInBtn, drawInfo };
+const drawAnnotation = function(state) {
+  const section = helpers.qs(".section");
+  const { isPlaying } = state.playing;
+  const { message } = state.playing;
+  if (isPlaying && !message) {
+    section.insertAdjacentHTML("beforeend", `${state.playing.annotationHTML}`);
+  } else {
+    section.insertAdjacentHTML("beforeend", `${state.playing.message}`);
+  }
+};
+
+export default { drawSignInBtn, drawInfo, drawAnnotation };
