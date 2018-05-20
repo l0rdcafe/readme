@@ -36,12 +36,12 @@ const signIn = function() {
                 .then(result => {
                   console.log(result);
                   model.setSongInfo(result.response);
-                  view.drawAnnotation(model.state);
                 })
                 .catch(err => console.error(err));
             } else {
-              console.log("No results found.");
+              model.state.playing.message = "No annotations found.";
             }
+            view.drawAnnotation(model.state);
           })
           .catch(err => console.error(err));
       })

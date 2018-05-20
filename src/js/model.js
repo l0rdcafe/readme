@@ -44,7 +44,7 @@ const setSongInfo = function(data) {
   if (isPlaying && isValidAnnotation) {
     state.playing.annotationHTML = data.song.description.html;
   } else {
-    state.playing.message = "No annotations available.";
+    state.playing.message = "No annotations found.";
   }
   console.log(state);
 };

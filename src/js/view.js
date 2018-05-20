@@ -54,9 +54,12 @@ const drawInfo = function(state) {
   const section = drawInfoDiv();
   const userTitle = drawUserTitle(state);
   const recentList = drawRecentPlays(state.recentlyPlayed);
+  const footer = helpers.qs(".footer");
 
   section.appendChild(userTitle);
   section.appendChild(recentList);
+
+  footer.style.position = "static";
 };
 
 const drawAnnotation = function(state) {
