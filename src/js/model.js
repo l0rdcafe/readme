@@ -38,14 +38,7 @@ const setUserInfo = function(res) {
 };
 
 const setSongInfo = function(data) {
-  console.log(data);
-  const { isPlaying } = state.playing;
-  const isValidAnnotation = data.song.description.html !== "<p>?</p>";
-  if (isPlaying && isValidAnnotation) {
-    state.playing.annotationHTML = data.song.description.html;
-  } else {
-    state.playing.message = "No annotations found.";
-  }
+  state.playing.annotationHTML = data.song.description.html;
   console.log(state);
 };
 

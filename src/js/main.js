@@ -19,32 +19,47 @@ const signIn = function() {
         console.log(res);
         model.setUserInfo(res);
         console.log(res);
+        const { isPlaying } = model.state.playing;
         view.drawInfo(model.state);
 
-        GeniusAPI.getSong(model.state)
-          .then(resp => {
-            const { response } = resp;
-            console.log(response);
-            const { isPlaying } = model.state.playing;
-            const isSameArtist =
-              model.state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
-            const isSameSong = model.state.playing.song.toLowerCase() === response.hits[0].result.title.toLowerCase();
-            if (isSameArtist && isSameSong && isPlaying) {
-              const { id } = response.hits[0].result;
+        if (isPlaying) {
+          GeniusAPI.getSong(model.state)
+            .then(resp => {
+              const { response } = resp;
+              console.log(response);
 
-              GeniusAPI.getSongInfo(id)
-                .then(result => {
-                  console.log(result);
-                  model.setSongInfo(result.response);
-                  const { annotationHTML } = model.state.playing;
-                  view.drawAnnotation(annotationHTML);
-                })
-                .catch(err => console.error(err));
-            } else {
-              view.drawAnnotation("No annotations found.");
-            }
-          })
-          .catch(err => console.error(err));
+              if (response.hits.length > 0) {
+                const isSameArtist =
+                  model.state.playing.artist.toLowerCase() ===
+                  response.hits[0].result.primary_artist.name.toLowerCase();
+
+                if (isSameArtist) {
+                  const { id } = response.hits[0].result;
+
+                  GeniusAPI.getSongInfo(id)
+                    .then(result => {
+                      console.log(result);
+                      const isValidAnnotation = result.response.song.description.html !== "<p>?</p>";
+
+                      if (isValidAnnotation) {
+                        model.setSongInfo(result.response);
+                        const { annotationHTML } = model.state.playing;
+                        view.drawAnnotation(annotationHTML);
+                      } else {
+                        view.drawAnnotation("No annotations found.");
+                        console.log(model.state);
+                      }
+                    })
+                    .catch(err => console.error(err));
+                } else {
+                  view.drawAnnotation("No annotations found.");
+                }
+              } else {
+                view.drawAnnotation("No annotations found.");
+              }
+            })
+            .catch(err => console.error(err));
+        }
       })
       .catch(err => console.error(err));
   } else {

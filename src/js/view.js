@@ -23,10 +23,10 @@ const drawRecentPlays = function(recents) {
 
   recents.forEach(recent => {
     const item = helpers.newEl("li");
-    const albumTitle = helpers.newEl("small");
+    const albumTitle = helpers.newEl("h6");
     albumTitle.innerHTML = `${recent.track.album.name}`;
     item.className = "list__item";
-    item.innerHTML = `${recent.track.artists[0].name} - ${recent.track.name}`;
+    item.innerHTML = `<h5>${recent.track.artists[0].name} - ${recent.track.name}</h5>`;
     item.appendChild(albumTitle);
     recentList.appendChild(item);
   });
