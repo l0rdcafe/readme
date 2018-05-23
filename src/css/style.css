@@ -13,7 +13,7 @@ button.x-centered {
 
 .title {
     color: #001f3f;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .title__item,
@@ -37,7 +37,8 @@ button.x-centered {
     color: #7fdbff;
 }
 
-img {
+img,
+iframe {
     max-width: 60%;
     max-height: 15vh;
 }
@@ -51,9 +52,10 @@ img {
         font-size: 2.5rem;
     }
 
-    img {
+    img,
+    iframe {
         max-width: 30%;
-        max-height: 22vh;
+        max-height: 25vh;
     }
 
     .annot {
