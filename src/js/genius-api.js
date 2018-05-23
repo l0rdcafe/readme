@@ -14,10 +14,25 @@ const getSong = function(state) {
   return helpers.getJSON(url);
 };
 
-const getSongInfo = function(id) {
-  const url = `${GENIUS_ENDPOINT}/songs/${id}?access_token=${ACCESS_TOKEN}&text_format=html`;
+const getSongInfo = function(state, cb) {
+  return getSong(state)
+    .then(res => {
+      const { response } = res;
 
-  return helpers.getJSON(url);
+      if (response.hits.length > 0) {
+        const isSameArtist =
+          state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
+
+        if (isSameArtist) {
+          const { id } = response.hits[0].result;
+          const url = `${GENIUS_ENDPOINT}/songs/${id}?access_token=${ACCESS_TOKEN}&text_format=html`;
+          return helpers.getJSON(url);
+        }
+        return cb("No annotations found.");
+      }
+      return cb("No annotations found.");
+    })
+    .catch(err => console.error(err));
 };
 
-export default { getSong, getSongInfo };
+export default { getSongInfo };

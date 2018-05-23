@@ -15,41 +15,20 @@ const accountSignIn = function() {
 };
 
 const getSongInfo = function() {
-  GeniusAPI.getSong(model.state)
-    .then(resp => {
-      const { response } = resp;
-      console.log(response);
+  GeniusAPI.getSongInfo(model.state, view.drawAnnotation)
+    .then(result => {
+      console.log(result);
+      const isValidAnnotation = result.response.song.description.html !== "<p>?</p>";
+      const embed = result.response.song.embed_content;
 
-      if (response.hits.length > 0) {
-        const isSameArtist =
-          model.state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
-
-        if (isSameArtist) {
-          const { id } = response.hits[0].result;
-
-          GeniusAPI.getSongInfo(id)
-            .then(result => {
-              console.log(result);
-              const isValidAnnotation = result.response.song.description.html !== "<p>?</p>";
-              const embed = result.response.song.embed_content;
-
-              if (isValidAnnotation) {
-                model.setSongInfo(result.response);
-                const { annotationHTML } = model.state.playing;
-                view.drawAnnotation(annotationHTML);
-                view.drawGeniusLink(embed);
-              } else {
-                view.drawAnnotation("No annotations found.");
-                view.drawGeniusLink(embed);
-                console.log(model.state);
-              }
-            })
-            .catch(err => console.error(err));
-        } else {
-          view.drawAnnotation("No annotations found.");
-        }
+      if (isValidAnnotation) {
+        model.setSongInfo(result.response);
+        const { annotationHTML } = model.state.playing;
+        view.drawAnnotation(annotationHTML);
+        view.drawGeniusLink(embed);
       } else {
         view.drawAnnotation("No annotations found.");
+        view.drawGeniusLink(embed);
       }
     })
     .catch(err => console.error(err));

@@ -1,7 +1,3 @@
-body {
-    text-align: center;
-}
-
 button.x-centered {
     margin-top: 15%;
 }
@@ -33,7 +29,9 @@ button.x-centered {
     font-size: 1.33333rem;
 }
 
-.link a:hover {
+.link a:hover,
+.link a:active,
+.link a:focus {
     color: #7fdbff;
 }
 
