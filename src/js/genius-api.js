@@ -18,19 +18,15 @@ const getSongInfo = function(state, cb) {
   return getSong(state)
     .then(res => {
       const { response } = res;
+      const isSameArtist =
+        state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
 
-      if (response.hits.length > 0) {
-        const isSameArtist =
-          state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
-
-        if (isSameArtist) {
-          const { id } = response.hits[0].result;
-          const url = `${GENIUS_ENDPOINT}/songs/${id}?access_token=${ACCESS_TOKEN}&text_format=html`;
-          return helpers.getJSON(url);
-        }
+      if (!isSameArtist || response.hits.length === 0) {
         return cb("No annotations found.");
       }
-      return cb("No annotations found.");
+      const { id } = response.hits[0].result;
+      const url = `${GENIUS_ENDPOINT}/songs/${id}?access_token=${ACCESS_TOKEN}&text_format=html`;
+      return helpers.getJSON(url);
     })
     .catch(err => console.error(err));
 };
