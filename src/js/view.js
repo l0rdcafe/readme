@@ -17,22 +17,6 @@ const drawInfoDiv = function() {
   return section;
 };
 
-const drawRecentPlays = function(recents) {
-  const recentList = helpers.newEl("ol");
-  recentList.className = "list";
-
-  recents.forEach(recent => {
-    const item = helpers.newEl("li");
-    const albumTitle = helpers.newEl("h6");
-    albumTitle.innerHTML = `${recent.track.album.name}`;
-    item.className = "list__item";
-    item.innerHTML = `<h5>${recent.track.artists[0].name} - ${recent.track.name}</h5>`;
-    item.appendChild(albumTitle);
-    recentList.appendChild(item);
-  });
-  return recentList;
-};
-
 const drawUserTitle = function(state) {
   const { user } = state;
   const { isPlaying } = state.playing;
@@ -44,7 +28,7 @@ const drawUserTitle = function(state) {
   } else {
     const { song } = state.playing;
     const { artist } = state.playing;
-    userTitle.innerHTML = `Welcome, ${user}. You are currently listening to ${song} by ${artist}`;
+    userTitle.innerHTML = `Welcome, <span class="title__user">${user}.</span> You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
   }
 
   return userTitle;
@@ -53,18 +37,24 @@ const drawUserTitle = function(state) {
 const drawInfo = function(state) {
   const section = drawInfoDiv();
   const userTitle = drawUserTitle(state);
-  const recentList = drawRecentPlays(state.recentlyPlayed);
-  const footer = helpers.qs(".footer");
 
   section.appendChild(userTitle);
-  section.appendChild(recentList);
-
-  footer.style.position = "static";
 };
 
 const drawAnnotation = function(message) {
   const section = helpers.qs(".section");
-  section.insertAdjacentHTML("beforeend", `${message}`);
+  const annotation = helpers.newEl("div");
+  annotation.className = "annot";
+  annotation.insertAdjacentHTML("beforeend", `${message}`);
+  section.appendChild(annotation);
 };
 
-export default { drawSignInBtn, drawInfo, drawAnnotation };
+const drawGeniusLink = function(text) {
+  const section = helpers.qs(".section");
+  const link = helpers.newEl("div");
+  link.className = "link";
+  link.insertAdjacentHTML("beforeend", `${text}`);
+  section.appendChild(link);
+};
+
+export default { drawSignInBtn, drawInfo, drawAnnotation, drawGeniusLink };

@@ -1,11 +1,66 @@
 body {
-    background-color: lime;
+    text-align: center;
 }
 
 button.x-centered {
     margin-top: 15%;
 }
 
+.section {
+    margin: 0;
+    padding: 1%;
+}
+
+.title {
+    color: #001f3f;
+    font-size: 2rem;
+}
+
+.title__item,
+.link a {
+    color: #0074d9;
+}
+
+.title__user {
+    color: #3d9970;
+}
+
+.annot {
+    font-size: 1.1rem;
+}
+
+.link {
+    font-size: 1.33333rem;
+}
+
+.link a:hover {
+    color: #7fdbff;
+}
+
+img {
+    max-width: 60%;
+    max-height: 15vh;
+}
+
 .footer h4 {
     margin-top: 2%;
+}
+
+@media (min-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    img {
+        max-width: 30%;
+        max-height: 22vh;
+    }
+
+    .annot {
+        font-size: 1.5rem;
+    }
+
+    .link {
+        font-size: 1.75rem;
+    }
 }

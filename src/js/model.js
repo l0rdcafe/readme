@@ -1,21 +1,18 @@
 const state = {
   user: "",
   playing: {},
-  userID: "",
-  recentlyPlayed: []
+  userID: ""
 };
 
 const resetState = function() {
   state.user = "";
   state.playing = {};
   state.userID = "";
-  state.recentlyPlayed = [];
 };
 
 const setUserInfo = function(res) {
   const name = res[0].display_name;
   const { id } = res[0];
-  const tracks = res[2].items;
   const isPlaying = res[1].is_playing;
 
   resetState();
@@ -34,12 +31,10 @@ const setUserInfo = function(res) {
 
   state.user = name;
   state.userID = id;
-  state.recentlyPlayed = [...tracks];
 };
 
 const setSongInfo = function(data) {
   state.playing.annotationHTML = data.song.description.html;
-  console.log(state);
 };
 
 export default { state, setUserInfo, setSongInfo };
