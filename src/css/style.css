@@ -4,12 +4,12 @@ button.x-centered {
 
 .section {
     margin: 0;
-    padding: 1%;
+    padding: 4%;
 }
 
 .title {
     color: #001f3f;
-    font-size: 1.5rem;
+    font-size: 2.2rem;
 }
 
 .title__item,
@@ -22,11 +22,11 @@ button.x-centered {
 }
 
 .annot {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
 }
 
 .link {
-    font-size: 1.33333rem;
+    font-size: 1.75rem;
 }
 
 .link a:hover,
@@ -37,8 +37,7 @@ button.x-centered {
 
 img,
 iframe {
-    max-width: 60%;
-    max-height: 15vh;
+    max-width: 100%;
 }
 
 .footer h4 {
@@ -47,20 +46,14 @@ iframe {
 
 @media (min-width: 768px) {
     .title {
-        font-size: 2.5rem;
-    }
-
-    img,
-    iframe {
-        max-width: 30%;
-        max-height: 25vh;
+        font-size: 3.75rem;
     }
 
     .annot {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
 
     .link {
-        font-size: 1.75rem;
+        font-size: 2.25rem;
     }
 }

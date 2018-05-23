@@ -47,6 +47,16 @@ const drawAnnotation = function(message) {
   annotation.className = "annot";
   annotation.insertAdjacentHTML("beforeend", `${message}`);
   section.appendChild(annotation);
+
+  console.log(window.innerHeight);
+
+  const { clientHeight } = document.documentElement;
+  const { scrollHeight } = document.documentElement;
+
+  if (clientHeight <= scrollHeight) {
+    const footer = helpers.qs(".footer");
+    footer.style.position = "static";
+  }
 };
 
 const drawGeniusLink = function(text) {
