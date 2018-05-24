@@ -78,6 +78,7 @@ const drawStats = function(data) {
   const title = helpers.qs(".title");
   list.className = "stats";
   const stats = [data.key, data.duration, data.tempo, data.danceability];
+
   stats.forEach(stat => {
     const isDuration = /:/.test(stat);
     const isKey = /^([A-Z]+[#]*)/.test(stat);
