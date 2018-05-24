@@ -18,17 +18,21 @@ const setUserInfo = function(res) {
     return duration;
   }
 
-  const name = res[0].display_name;
-  const { id } = res[0];
-  const isPlaying = res[1].is_playing;
+  function parseResponse(resp) {
+    const name = resp[0].display_name;
+    const { id } = resp[0];
+    const isPlaying = resp[1].is_playing;
+    const artist = resp[1].item.artists[0].name;
+    const song = resp[1].item.name;
+    const duration = convertMillisToMinsSecs(resp[1].item.duration_ms);
+    return [name, id, isPlaying, song, artist, duration];
+  }
 
   resetState();
 
-  if (isPlaying) {
-    const song = res[1].item.name;
-    const artist = res[1].item.artists[0].name;
-    const duration = convertMillisToMinsSecs(res[1].item.duration_ms);
+  const [name, id, isPlaying, song, artist, duration] = parseResponse(res);
 
+  if (isPlaying) {
     state.playing = {
       song,
       artist,
@@ -47,4 +51,50 @@ const setSongInfo = function(data) {
   state.playing.annotationHTML = data.song.description.html;
 };
 
-export default { state, setUserInfo, setSongInfo };
+const setSongStats = function(stats) {
+  function parseStats(data) {
+    const keyDict = {
+      0: "C",
+      1: "C# / Db",
+      2: "D",
+      3: "D# / Eb",
+      4: "E",
+      5: "F",
+      6: "F# / Gb",
+      7: "G",
+      8: "G# / Ab",
+      9: "A",
+      10: "A# / Bb",
+      11: "B"
+    };
+
+    const parseDance = function(danceIndex) {
+      let danceability;
+      const index = danceIndex.toFixed(2);
+
+      if (index <= 0.25) {
+        danceability = "info";
+      } else if (index <= 0.5) {
+        danceability = "primary";
+      } else if (index <= 0.75) {
+        danceability = "warning";
+      } else if (index <= 1) {
+        danceability = "error";
+      }
+      return danceability;
+    };
+
+    const key = keyDict[stats.key];
+    const tempo = Math.floor(data.tempo);
+    const danceability = parseDance(stats.danceability);
+    return [tempo, key, danceability];
+  }
+
+  const [tempo, key, danceability] = parseStats(stats);
+
+  state.playing.tempo = tempo;
+  state.playing.key = key;
+  state.playing.danceability = danceability;
+};
+
+export default { state, setUserInfo, setSongInfo, setSongStats };

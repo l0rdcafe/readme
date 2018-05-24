@@ -40,11 +40,36 @@ iframe {
     max-width: 100%;
 }
 
+.stats {
+    font-size: 1.5rem;
+}
+
+.stats__item {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.stats__item__text {
+    color: #6b6cbb;
+}
+
+.stats__item .dance {
+    height: 4.5vh;
+    width: 30%;
+    border-radius: 4px;
+}
+
 .footer h4 {
     margin-top: 2%;
 }
 
 @media (min-width: 768px) {
+    .section {
+        padding-top: 2%;
+        padding-bottom: 2%;
+    }
+
     .title {
         font-size: 3.75rem;
     }
@@ -55,5 +80,14 @@ iframe {
 
     .link {
         font-size: 2.25rem;
+    }
+
+    .stats {
+        font-size: 1.75rem;
+        display: flex;
+    }
+
+    .stats__item .dance {
+        height: 100%;
     }
 }

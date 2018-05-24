@@ -1,5 +1,17 @@
 import helpers from "./helpers";
 
+const drawSpinner = function() {
+  const spinner = helpers.newEl("i");
+  const section = helpers.qs(".section");
+  spinner.className = "fas fa-spinner fa-spin x-centered fa-lg";
+  section.appendChild(spinner);
+};
+
+const removeSpinner = function() {
+  const spinner = helpers.qs(".fa-spinner");
+  spinner.parentNode.removeChild(spinner);
+};
+
 const drawSignInBtn = function() {
   const signBtn = helpers.newEl("button");
   const footer = helpers.qs(".footer");
@@ -7,14 +19,6 @@ const drawSignInBtn = function() {
   signBtn.className = "button x-centered info";
   footer.parentNode.insertBefore(signBtn, footer);
   return signBtn;
-};
-
-const drawInfoDiv = function() {
-  const section = helpers.newEl("div");
-  const footer = helpers.qs(".footer");
-  section.className = "section";
-  footer.parentNode.insertBefore(section, footer);
-  return section;
 };
 
 const drawUserTitle = function(state) {
@@ -26,8 +30,7 @@ const drawUserTitle = function(state) {
   if (!isPlaying) {
     userTitle.innerHTML = "You are currently not playing anything. Please play a song on your Spotify.";
   } else {
-    const { song } = state.playing;
-    const { artist } = state.playing;
+    const { song, artist } = state.playing;
     userTitle.innerHTML = `Welcome, <span class="title__user">${user}.</span> You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
   }
 
@@ -35,8 +38,11 @@ const drawUserTitle = function(state) {
 };
 
 const drawInfo = function(state) {
-  const section = drawInfoDiv();
+  const section = helpers.qs(".section");
   const userTitle = drawUserTitle(state);
+  const footer = helpers.qs(".footer");
+  section.innerHTML = "";
+  footer.style.position = "absolute";
 
   section.appendChild(userTitle);
 };
@@ -46,16 +52,16 @@ const drawAnnotation = function(message) {
   const annotation = helpers.newEl("div");
   annotation.className = "annot";
   annotation.insertAdjacentHTML("beforeend", `${message}`);
+  removeSpinner();
   section.appendChild(annotation);
 
-  console.log(window.innerHeight);
+  const pxFromBottom = window.innerHeight - document.body.scrollHeight;
+  const footer = helpers.qs(".footer");
 
-  const { clientHeight } = document.documentElement;
-  const { scrollHeight } = document.documentElement;
-
-  if (clientHeight <= scrollHeight) {
-    const footer = helpers.qs(".footer");
+  if (pxFromBottom < 125) {
     footer.style.position = "static";
+  } else {
+    footer.style.position = "absolute";
   }
 };
 
@@ -67,4 +73,31 @@ const drawGeniusLink = function(text) {
   section.appendChild(link);
 };
 
-export default { drawSignInBtn, drawInfo, drawAnnotation, drawGeniusLink };
+const drawStats = function(data) {
+  const list = helpers.newEl("ol");
+  const title = helpers.qs(".title");
+  list.className = "stats";
+  const stats = [data.key, data.duration, data.tempo, data.danceability];
+  stats.forEach(stat => {
+    const isDuration = /:/.test(stat);
+    const isKey = /^([A-Z]+[#]*)/.test(stat);
+    const isDanceability = /^([a-z]+)$/.test(stat);
+    const statLi = helpers.newEl("li");
+    statLi.className = `stats__item`;
+
+    if (isDuration) {
+      statLi.innerHTML = `Duration: <span class="stats__item__text">${stat}</span>`;
+    } else if (isKey) {
+      statLi.innerHTML = `Key: <span class="stats__item__text">${stat}</span>`;
+    } else if (isDanceability) {
+      statLi.innerHTML = `Danceability: <div class="${stat} dance"></div>`;
+    } else {
+      statLi.innerHTML = `Tempo: <span class="stats__item__text">${stat} BPM</span>`;
+    }
+    list.appendChild(statLi);
+  });
+
+  title.parentNode.insertBefore(list, title.nextSibling);
+};
+
+export default { drawSignInBtn, drawInfo, drawAnnotation, drawGeniusLink, drawSpinner, drawStats };
