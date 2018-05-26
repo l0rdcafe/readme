@@ -1,5 +1,26 @@
 import helpers from "./helpers";
 
+const drawNotif = function(msg, type = "error") {
+  const div = helpers.newEl("div");
+  const section = helpers.qs(".section");
+  div.innerHTML = msg;
+  div.className = `notif animated fadeInDown text-c ${type}`;
+  section.parentNode.insertBefore(div, section.nextSibling);
+  const notif = helpers.qs(".notif");
+
+  setTimeout(() => {
+    notif.classList.remove("fadeInDown");
+    notif.classList.add("fadeOutUp");
+  }, 2500);
+};
+
+const removeNotifs = function() {
+  const notifs = helpers.qsa(".notif");
+  for (let i = 0; i < notifs.length; i += 1) {
+    notifs[i].parentNode.removeChild(notifs[i]);
+  }
+};
+
 const drawSpinner = function() {
   const spinner = helpers.newEl("i");
   const section = helpers.qs(".section");
@@ -14,10 +35,19 @@ const removeSpinner = function() {
 
 const drawSignInBtn = function() {
   const signBtn = helpers.newEl("button");
-  const footer = helpers.qs(".footer");
   signBtn.textContent = "Sign In";
   signBtn.className = "button x-centered info";
-  footer.parentNode.insertBefore(signBtn, footer);
+  return signBtn;
+};
+
+const drawSignIn = function() {
+  const signBtn = drawSignInBtn();
+  const section = helpers.qs(".section");
+  const title = helpers.newEl("h4");
+  title.className = "title";
+  title.innerHTML = "Sign in with your Spotify account to get annotations about your currently playing track.";
+  section.appendChild(title);
+  section.appendChild(signBtn);
   return signBtn;
 };
 
@@ -29,6 +59,9 @@ const drawUserTitle = function(state) {
 
   if (!isPlaying) {
     userTitle.innerHTML = "You are currently not playing anything. Please play a song on your Spotify.";
+  } else if (user === null) {
+    const { song, artist } = state.playing;
+    userTitle.innerHTML = `Welcome. You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
   } else {
     const { song, artist } = state.playing;
     userTitle.innerHTML = `Welcome, <span class="title__user">${user}.</span> You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
@@ -58,7 +91,7 @@ const drawAnnotation = function(message) {
   const pxFromBottom = window.innerHeight - document.body.scrollHeight;
   const footer = helpers.qs(".footer");
 
-  if (pxFromBottom < 125) {
+  if (pxFromBottom < 120) {
     footer.style.position = "static";
   } else {
     footer.style.position = "absolute";
@@ -77,28 +110,37 @@ const drawStats = function(data) {
   const list = helpers.newEl("ol");
   const title = helpers.qs(".title");
   list.className = "stats";
-  const stats = [data.key, data.duration, data.tempo, data.danceability];
 
-  stats.forEach(stat => {
-    const isDuration = /:/.test(stat);
-    const isKey = /^([A-Z]+[#]*)/.test(stat);
-    const isDanceability = /^([a-z]+)$/.test(stat);
-    const statLi = helpers.newEl("li");
-    statLi.className = `stats__item`;
+  const keyLi = helpers.newEl("li");
+  const tempoLi = helpers.newEl("li");
+  const durationLi = helpers.newEl("li");
+  const danceabilityLi = helpers.newEl("li");
 
-    if (isDuration) {
-      statLi.innerHTML = `Duration: <span class="stats__item__text">${stat}</span>`;
-    } else if (isKey) {
-      statLi.innerHTML = `Key: <span class="stats__item__text">${stat}</span>`;
-    } else if (isDanceability) {
-      statLi.innerHTML = `Danceability: <div class="${stat} dance"></div>`;
-    } else {
-      statLi.innerHTML = `Tempo: <span class="stats__item__text">${stat} BPM</span>`;
-    }
-    list.appendChild(statLi);
-  });
+  keyLi.className = "stats__item";
+  tempoLi.className = "stats__item";
+  durationLi.className = "stats__item";
+  danceabilityLi.className = "stats__item";
+
+  keyLi.innerHTML = `Key: <span class="stats__item__text">${data.key}</span>`;
+  tempoLi.innerHTML = `Tempo: <span class="stats__item__text">${data.tempo} BPM</span>`;
+  durationLi.innerHTML = `Duration: <span class="stats__item__text">${data.duration}</span>`;
+  danceabilityLi.innerHTML = `Danceability: <div class="${data.danceability} dance"></div>`;
+
+  list.appendChild(keyLi);
+  list.appendChild(durationLi);
+  list.appendChild(tempoLi);
+  list.appendChild(danceabilityLi);
 
   title.parentNode.insertBefore(list, title.nextSibling);
 };
 
-export default { drawSignInBtn, drawInfo, drawAnnotation, drawGeniusLink, drawSpinner, drawStats };
+export default {
+  drawSignIn,
+  drawInfo,
+  drawAnnotation,
+  drawGeniusLink,
+  drawSpinner,
+  drawStats,
+  drawNotif,
+  removeNotifs
+};

@@ -13,21 +13,39 @@ const getSong = function(state) {
   return helpers.getJSON(url);
 };
 
-const getSongInfo = function(state, cb) {
+const getSongInfo = function(state) {
   return getSong(state)
     .then(res => {
       const { response } = res;
 
+      function isValidAnnotation(resp) {
+        return resp.response.song.description.html !== "<p>?</p>";
+      }
+
+      function isValidEmbed(resp) {
+        return resp.response.song.embed_content !== "";
+      }
+
       if (response.hits.length > 0) {
         const isSameArtist =
           state.playing.artist.toLowerCase() === response.hits[0].result.primary_artist.name.toLowerCase();
-        if (isSameArtist) {
+        const isSameSong = state.playing.song.toLowerCase() === response.hits[0].result.title.toLowerCase();
+
+        if (isSameArtist && isSameSong) {
           const { id } = response.hits[0].result;
           const url = `${GENIUS_ENDPOINT}/songs/${id}?access_token=${ACCESS_TOKEN}&text_format=html`;
-          return helpers.getJSON(url);
+
+          return helpers.getJSON(url).then(result => {
+            if (isValidAnnotation(result) && isValidEmbed(result)) {
+              return { annot: result.response.song.description.html, embed: result.response.song.embed_content };
+            } else if (isValidEmbed(result)) {
+              return { embed: result.response.song.embed_content, annot: "No annotations found." };
+            }
+            return { error: true, embed: "No lyrics available." };
+          });
         }
       }
-      return cb("No annotations found.");
+      return { error: true, embed: "No lyrics available." };
     })
     .catch(err => console.error(err));
 };

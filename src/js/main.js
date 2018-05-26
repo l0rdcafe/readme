@@ -10,32 +10,28 @@ const accountSignIn = function() {
   if (tokenInStorage) {
     localStorage.removeItem("ACCESS_TOKEN");
   }
-  const signBtn = view.drawSignInBtn();
+  helpers.qs(".section").innerHTML = "";
+  const signBtn = view.drawSignIn();
   helpers.$on(signBtn, "click", OAuth.authSignIn);
 };
 
 const getSongInfo = function() {
-  GeniusAPI.getSongInfo(model.state, view.drawAnnotation)
+  GeniusAPI.getSongInfo(model.state)
     .then(result => {
-      function isValidAnnotation(res) {
-        return res.response.song.description.html !== "<p>?</p>";
-      }
-
-      if (result) {
-        const embed = result.response.song.embed_content;
-
-        if (isValidAnnotation(result)) {
-          model.setSongInfo(result.response);
-          const { annotationHTML } = model.state.playing;
-          view.drawAnnotation(annotationHTML);
-          view.drawGeniusLink(embed);
-        } else {
-          view.drawAnnotation("No annotations found.");
-          view.drawGeniusLink(embed);
-        }
+      if (result.error) {
+        const { embed } = result;
+        view.drawAnnotation("No annotations found.");
+        view.drawGeniusLink(embed);
+      } else {
+        model.setSongInfo(result.annot);
+        const { annotationHTML } = model.state.playing;
+        view.drawAnnotation(annotationHTML);
+        view.drawGeniusLink(result.embed);
       }
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      view.drawNotif("Sorry there's a network error. Please try again later.");
+    });
 };
 
 const getCurrentlyPlaying = function(token) {
@@ -44,16 +40,20 @@ const getCurrentlyPlaying = function(token) {
       Authorization: `Bearer ${token}`
     }
   };
+  view.removeNotifs();
   SpotifyAPI.getInfo(options)
     .then(res => {
-      if (res[0].error) {
+      if (res.error) {
         accountSignIn();
-      } else if (model.state.playing === {} || model.state.playing.song !== res[1].item.name) {
-        model.setUserInfo(res);
-        const isPlaying = res[1].is_playing;
+      } else if (res.status === 429) {
+        view.drawNotif(res.message);
+      } else if (model.state.playing.song !== res.data[3]) {
+        const { data } = res;
+        model.setUserInfo(data);
+        const isPlaying = data[2];
+        const id = data[1];
 
         if (isPlaying) {
-          const { id } = res[1].item;
           SpotifyAPI.getSongStats(id, options)
             .then(result => {
               model.setSongStats(result);
@@ -66,7 +66,9 @@ const getCurrentlyPlaying = function(token) {
         view.drawSpinner();
       }
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      view.drawNotif("Sorry there's a network error. Please try again later.");
+    });
 };
 
 const pollSongPlaying = function(token) {
