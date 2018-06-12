@@ -1,5 +1,11 @@
+h1 {
+    padding-top: 1.5%;
+    font-size: 3rem;
+    margin-bottom: 0;
+}
+
 button.x-centered {
-    margin-top: 15%;
+    margin-top: 6%;
 }
 
 .section {
@@ -60,18 +66,33 @@ iframe {
     border-radius: 4px;
 }
 
+.footer {
+    height: 11.5vh;
+    font-size: 1.25rem;
+    padding: 0.5% 0;
+}
+
 .footer h4 {
-    margin-top: 2%;
+    font-size: 1.5rem;
+    margin-top: 0;
+}
+
+.footer__social {
+    margin: 0;
 }
 
 @media (min-width: 768px) {
+    h1 {
+        font-size: 5rem;
+    }
+
     .section {
         padding-top: 2%;
         padding-bottom: 2%;
     }
 
     .title {
-        font-size: 3.75rem;
+        font-size: 3.25rem;
     }
 
     .annot {
