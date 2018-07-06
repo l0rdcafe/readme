@@ -41,6 +41,7 @@ const getCurrentlyPlaying = function(token) {
     }
   };
   view.removeNotifs();
+
   SpotifyAPI.getInfo(options)
     .then(res => {
       if (res.error) {
@@ -63,6 +64,7 @@ const getCurrentlyPlaying = function(token) {
           getSongInfo();
         }
         view.drawInfo(model.state);
+        view.removeBg();
         view.drawSpinner();
       }
     })
@@ -80,6 +82,7 @@ const pollSongPlaying = function(token) {
 const signIn = function() {
   const hasToken = /[#&]access_token=([^&]*)/.test(window.location.hash);
   const tokenInStorage = localStorage.getItem("ACCESS_TOKEN");
+  view.drawSpinner();
   if (hasToken) {
     const ACCESS_TOKEN = OAuth.getAccessToken();
     localStorage.setItem("ACCESS_TOKEN", `${ACCESS_TOKEN}`);

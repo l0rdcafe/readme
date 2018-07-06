@@ -1,5 +1,13 @@
 import helpers from "./helpers";
 
+const removeBg = function() {
+  const bg1 = helpers.qs(".bg1");
+  const bg2 = helpers.qs(".bg2");
+
+  bg1.parentNode.removeChild(bg1);
+  bg2.parentNode.removeChild(bg2);
+};
+
 const drawNotif = function(msg, type = "error") {
   const div = helpers.newEl("div");
   const section = helpers.qs(".section");
@@ -142,5 +150,6 @@ export default {
   drawSpinner,
   drawStats,
   drawNotif,
-  removeNotifs
+  removeNotifs,
+  removeBg
 };

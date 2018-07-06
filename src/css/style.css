@@ -1,3 +1,25 @@
+.bg1 {
+    background-image: url("/assets/bg-img1.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 70%;
+    height: 45vh;
+    top: 55%;
+    right: 1%;
+
+}
+
+.bg2 {
+    background-image: url("/assets/bg-img2.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 70%;
+    height: 50vh;
+    top: 75%;
+}
+
 h1 {
     padding-top: 1.5%;
     font-size: 3rem;
@@ -84,6 +106,22 @@ iframe {
 @media (min-width: 768px) {
     h1 {
         font-size: 5rem;
+    }
+
+    .bg1 {
+        background-position: right;
+        height: 35vh;
+        width: 35%;
+        top: 35%;
+        right: 2%;
+    }
+
+    .bg2 {
+        background-position: left;
+        height: 35vh;
+        width: 35%;
+        top: 55%;
+        left: 2%;
     }
 
     .section {
