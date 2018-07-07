@@ -1,5 +1,5 @@
 .bg1 {
-    background-image: url("/assets/bg-img1.png");
+    background-image: url("../assets/bg-img1.png");
     background-size: contain;
     background-repeat: no-repeat;
     position: absolute;
@@ -11,7 +11,7 @@
 }
 
 .bg2 {
-    background-image: url("/assets/bg-img2.png");
+    background-image: url("../assets/bg-img2.png");
     background-size: contain;
     background-repeat: no-repeat;
     position: absolute;

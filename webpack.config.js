@@ -39,6 +39,15 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: "babel-loader"
+      },
+      {
+        test: /\.(jpg|png)$/,
+        use: {
+          loader: "file-loader",
+          options: {
+            name: "./assets/[name].[ext]"
+          }
+        }
       }
     ]
   },
