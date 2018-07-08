@@ -1,7 +1,9 @@
 function getJSON(url, opts = {}) {
   return fetch(url, opts)
     .then(res => res.json())
-    .catch(err => console.error(err));
+    .catch(err => {
+      throw err;
+    });
 }
 
 function qs(selector, scope) {

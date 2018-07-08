@@ -30,6 +30,7 @@ const getSongInfo = function() {
       }
     })
     .catch(err => {
+      Raven.captureException(err);
       view.drawNotif("Sorry there's a network error. Please try again later.");
     });
 };
@@ -47,6 +48,7 @@ const getCurrentlyPlaying = function(token) {
       if (res.error) {
         accountSignIn();
       } else if (res.status === 429) {
+        Raven.captureException(new Error(res.message));
         view.drawNotif(res.message);
       } else if (model.state.playing.song !== res.data[3]) {
         const { data } = res;
@@ -60,7 +62,9 @@ const getCurrentlyPlaying = function(token) {
               model.setSongStats(result);
               view.drawStats(model.state.playing);
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              throw err;
+            });
           getSongInfo();
         }
         view.drawInfo(model.state);
@@ -69,6 +73,7 @@ const getCurrentlyPlaying = function(token) {
       }
     })
     .catch(err => {
+      Raven.captureException(err);
       view.drawNotif("Sorry there's a network error. Please try again later.");
     });
 };

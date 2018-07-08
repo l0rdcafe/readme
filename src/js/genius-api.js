@@ -47,7 +47,9 @@ const getSongInfo = function(state) {
       }
       return { error: true, embed: "No lyrics available." };
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      throw err;
+    });
 };
 
 export default { getSongInfo };
