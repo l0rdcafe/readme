@@ -11,6 +11,7 @@ const accountSignIn = function() {
     localStorage.removeItem("ACCESS_TOKEN");
   }
   helpers.qs(".section").innerHTML = "";
+  view.drawBg();
   const signBtn = view.drawSignIn();
   helpers.$on(signBtn, "click", OAuth.authSignIn);
 };
@@ -45,8 +46,8 @@ const getCurrentlyPlaying = function(token) {
 
   SpotifyAPI.getInfo(options)
     .then(res => {
-      if (res.error) {
-        accountSignIn();
+      if (res.missing) {
+        return res.missing;
       } else if (res.status === 429) {
         Raven.captureException(new Error(res.message));
         view.drawNotif(res.message);
@@ -86,15 +87,20 @@ const pollSongPlaying = function(token) {
 
 const signIn = function() {
   const hasToken = /[#&]access_token=([^&]*)/.test(window.location.hash);
-  const tokenInStorage = localStorage.getItem("ACCESS_TOKEN");
   view.drawSpinner();
-  if (hasToken) {
-    const ACCESS_TOKEN = OAuth.getAccessToken();
-    localStorage.setItem("ACCESS_TOKEN", `${ACCESS_TOKEN}`);
-    pollSongPlaying(ACCESS_TOKEN);
-  } else if (tokenInStorage) {
-    const ACCESS_TOKEN = localStorage.getItem("ACCESS_TOKEN");
-    pollSongPlaying(ACCESS_TOKEN);
+
+  if (localStorage) {
+    const tokenInStorage = localStorage.getItem("ACCESS_TOKEN");
+    if (hasToken) {
+      const ACCESS_TOKEN = OAuth.getAccessToken();
+      localStorage.setItem("ACCESS_TOKEN", `${ACCESS_TOKEN}`);
+      pollSongPlaying(ACCESS_TOKEN);
+    } else if (tokenInStorage) {
+      const ACCESS_TOKEN = localStorage.getItem("ACCESS_TOKEN");
+      pollSongPlaying(ACCESS_TOKEN);
+    } else {
+      accountSignIn();
+    }
   } else {
     accountSignIn();
   }

@@ -1,6 +1,10 @@
 function getJSON(url, opts = {}) {
   return fetch(url, opts)
-    .then(res => res.json())
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+    })
     .catch(err => {
       throw err;
     });

@@ -4,8 +4,22 @@ const removeBg = function() {
   const bg1 = helpers.qs(".bg1");
   const bg2 = helpers.qs(".bg2");
 
+  if (!bg1 || !bg2) {
+    return;
+  }
+
   bg1.parentNode.removeChild(bg1);
   bg2.parentNode.removeChild(bg2);
+};
+
+const drawBg = function() {
+  const section = helpers.qs(".section");
+  const bg1 = helpers.newEl("div");
+  const bg2 = helpers.newEl("div");
+  bg1.className = "bg1";
+  bg2.className = "bg2";
+  section.parentNode.insertBefore(bg1, section);
+  section.parentNode.insertBefore(bg2, section);
 };
 
 const drawNotif = function(msg, type = "error") {
@@ -38,6 +52,9 @@ const drawSpinner = function() {
 
 const removeSpinner = function() {
   const spinner = helpers.qs(".fa-spinner");
+  if (!spinner) {
+    return;
+  }
   spinner.parentNode.removeChild(spinner);
 };
 
@@ -69,7 +86,7 @@ const drawUserTitle = function(state) {
     userTitle.innerHTML = "You are currently not playing anything. Please play a song on your Spotify.";
   } else if (user === null) {
     const { song, artist } = state.playing;
-    userTitle.innerHTML = `Welcome. You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
+    userTitle.innerHTML = `Welcome, Stranger. You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
   } else {
     const { song, artist } = state.playing;
     userTitle.innerHTML = `Welcome, <span class="title__user">${user}.</span> You are currently listening to <span class="title__item">${song}</span> by <span class="title__item">${artist}</span>`;
@@ -151,5 +168,6 @@ export default {
   drawStats,
   drawNotif,
   removeNotifs,
-  removeBg
+  removeBg,
+  drawBg
 };

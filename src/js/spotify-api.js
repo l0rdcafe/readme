@@ -13,8 +13,8 @@ const getInfo = function(options) {
   }
 
   function parseResponse(resp) {
-    if (resp[0].error) {
-      return { error: true };
+    if (!resp[0]) {
+      return { missing: true };
     } else if (resp[0].status === 429) {
       return { message: `Sorry, you have exceeded the request limit. Please try again later.`, status: 429 };
     }
