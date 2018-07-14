@@ -5,15 +5,19 @@ import OAuth from "./oauth";
 import model from "./model";
 import GeniusAPI from "./genius-api";
 
+const drawSignInState = function() {
+  helpers.qs(".section").innerHTML = "";
+  view.drawBg();
+  const signBtn = view.drawSignIn();
+  helpers.$on(signBtn, "click", OAuth.authSignIn);
+};
+
 const accountSignIn = function() {
   const tokenInStorage = localStorage.getItem("ACCESS_TOKEN");
   if (tokenInStorage) {
     localStorage.removeItem("ACCESS_TOKEN");
   }
-  helpers.qs(".section").innerHTML = "";
-  view.drawBg();
-  const signBtn = view.drawSignIn();
-  helpers.$on(signBtn, "click", OAuth.authSignIn);
+  drawSignInState();
 };
 
 const getSongInfo = function() {
@@ -102,7 +106,7 @@ const signIn = function() {
       accountSignIn();
     }
   } else {
-    accountSignIn();
+    drawSignInState();
   }
 };
 
